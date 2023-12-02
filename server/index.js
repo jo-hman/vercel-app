@@ -1,12 +1,35 @@
-const express = require('express')
-const app = express()
+const express = require('express');
+const bodyParser = require('body-parser');
+const session = require('./db');
+const { postUser, getUsers, getAccessCode } = require('./users');
 
+const app = express();
+app.use(bodyParser.json());
 // app.use("/", (req, res) => {
 //     res.send("Server is running")
 // })
 
-app.get("/test", (req, res) => {
-    res.send("test")
-})
+session
+    .run('CREATE CONSTRAINT user_is_unique IF NOT EXISTS FOR (u:User) REQUIRE u.name IS UNIQUE')
+    .then(result => console.log('Created user constraint'))
+    .catch(err => console.log(err));
 
-app.listen(5000, console.log("Server started on port 5000"));
+// USERS
+app.post("/users", postUser);
+app.get("/users", getUsers);
+
+app.post("/users/accessCodes", getAccessCode);
+
+// POSTS
+
+
+
+
+app.listen(5000, console.log('Server started'));
+
+process.on('exit', function() {
+    driver.close();
+});
+
+
+
