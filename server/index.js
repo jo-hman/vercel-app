@@ -5,7 +5,7 @@ const app = express()
 //     res.send("Server is running")
 // })
 
-app.use("/test", (req, res) => {
+app.get("/test", (req, res) => {
     res.send("test")
 })
 
