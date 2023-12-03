@@ -1,4 +1,4 @@
-const baseUrl = 'https://vercel-app-server-murex.vercel.app/';
+const baseUrl = 'https://vercel-app-server-murex.vercel.app';
 
 export const createAccessCodeUrl = baseUrl + '/users/accessCodes';
 
