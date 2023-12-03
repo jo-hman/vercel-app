@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { JwtPayload, extractJwtPayload, jwtLocalStorageKey } from './utils/jwtUtils';
 import Login from './login/Login';
