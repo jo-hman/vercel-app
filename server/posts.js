@@ -60,7 +60,21 @@ const getPosts = (req, res) => {
     }
 }
 
+const deletePost = (req, res) => {
+    session
+        .run('MATCH (post:Post {id: $postId}) DETACH DELETE post', { postId: req.params.id })
+        .then(result => {
+                console.log('User deleted a post', result);
+                res.send();
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(404).send();
+        });
+}
+
 module.exports = {
     postPost: postPost,
-    getPosts: getPosts
+    getPosts: getPosts,
+    deletePost: deletePost
 };

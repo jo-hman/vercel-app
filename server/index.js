@@ -2,14 +2,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('./db');
 const { postUser, getUsers, getAccessCode } = require('./users');
-const { postPost, getPosts } = require('./posts');
+const { postPost, getPosts, deletePost } = require('./posts');
 const { postComment, getComments } = require('./comments');
 
 const app = express();
 app.use(bodyParser.json());
-// app.use("/", (req, res) => {
-//     res.send("Server is running")
-// })
 
 session
     .run('CREATE CONSTRAINT user_is_unique IF NOT EXISTS FOR (u:User) REQUIRE u.name IS UNIQUE')
@@ -30,11 +27,12 @@ app.post("/users/accessCodes", getAccessCode);
 // POSTS
 app.post('/posts', postPost);
 app.get('/posts', getPosts);
+app.delete('/posts/:id', deletePost);
+
 
 // COMMENTS
 app.post('/posts/:id/comments', postComment);
 app.get('/posts/:id/comments', getComments);
-
 
 
 app.listen(5000, console.log('Server started'));
