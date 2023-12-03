@@ -1,26 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { JwtPayload, extractJwtPayload, jwtLocalStorageKey } from './utils/jwtUtils';
+import Login from './login/Login';
+import MainPage from './mainPage/MainPage';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+  const [jwtExpired, setJwtExpired] = useState(true);
+
+  const checkTokenExpiration = () => {
+    const jwt = localStorage.getItem(jwtLocalStorageKey);
+    if (jwt) {
+
+      const decoded: JwtPayload = extractJwtPayload(jwt);
+      const expiration = decoded.exp * 1000;
+
+      if (Date.now() > expiration) {
+        setJwtExpired(true);
+      } else {
+        setJwtExpired(false);
+      }
+    } else {
+      setJwtExpired(true);
+    }
+  };
+
+  useEffect(() => {
+    checkTokenExpiration();
+  });
+
+
+  return jwtExpired ? (
+      <Login checkExpiration={checkTokenExpiration}/>
+    ) : (
+      <MainPage />
+    );
 }
 
 export default App;

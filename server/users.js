@@ -1,4 +1,4 @@
-const session = require("./db");
+const driver = require("./db");
 const jwt = require('jsonwebtoken');
 const secret = 'secret';
 
@@ -33,6 +33,8 @@ function createAccessCode(username, callback) {
 
 
 const postUser = (req, res) => {
+    const session = driver.session();
+
     session
         .run('CREATE (a:User {name: $name, password: $password}) RETURN a', { name: req.body.name, password: req.body.password})
         .then(result => {
@@ -54,19 +56,26 @@ const postUser = (req, res) => {
 }
 
 const getAccessCode = (req, res) => {
+    const session = driver.session();
+    
     session
         .run('MATCH (u:User {name: $name, password: $password}) RETURN u', { name: req.body.name, password: req.body.password})
         .then(result => {
-            console.log('User authenticated ', result.records[0]._fields[0]);
-
-            createAccessCode(req.body.name, (err, accessCode) => {
-                if (err) {
-                    console.error("Error creating access code:", err);
-                    res.status(500).send("Internal Server Error");
-                } else {
-                    res.send({ 'accessCode': accessCode });
-                }
-            });
+            console.log('User authentication ', result);
+            
+            if (result.records[0] === undefined) {
+                res.status(400).send();
+            } else {
+                createAccessCode(req.body.name, (err, accessCode) => {
+                    if (err) {
+                        console.error("Error creating access code:", err);
+                        res.status(500).send("Internal Server Error");
+                    } else {
+                        res.send({ 'accessCode': accessCode });
+                    }
+                });
+            }
+            
         })
         .catch(err => {
             console.log(err);
@@ -75,6 +84,8 @@ const getAccessCode = (req, res) => {
 }
 
 const getUsers = (req, res) => { 
+    const session = driver.session();
+
     session
         .run('MATCH (n:User) RETURN n;')
         .then(result => {

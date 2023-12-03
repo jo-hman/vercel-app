@@ -1,12 +1,18 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const session = require('./db');
+const cors = require('cors')
+
 const { postUser, getUsers, getAccessCode } = require('./users');
 const { postPost, getPosts, deletePost } = require('./posts');
 const { postComment, getComments } = require('./comments');
+const driver = require('./db');
 
 const app = express();
 app.use(bodyParser.json());
+
+app.use(cors())
+
+const session = driver.session();
 
 session
     .run('CREATE CONSTRAINT user_is_unique IF NOT EXISTS FOR (u:User) REQUIRE u.name IS UNIQUE')
