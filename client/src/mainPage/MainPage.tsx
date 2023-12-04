@@ -117,7 +117,12 @@ const MainPage= ()=> {
                 <div>
                     <p>Posts list:</p>
                     {posts.map((post) => (
-                        <div>
+                        <div style={{
+                            position: 'relative',
+                            padding: '20px', // Adjust padding as needed
+                            border: '2px solid #000', // Border color and width
+                            borderRadius: '10px', // Adjust border-radius for rounded corners
+                        }}>
                             <p>------------------</p>
                             <div key={post.id}>
                                 <p>Title: {post.title} Author: {post.name}</p>
